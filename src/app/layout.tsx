@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TRPCProvider } from "@/trpc/provider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +39,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <TRPCProvider>{children}</TRPCProvider>
         </ThemeProvider>
       </body>
     </html>
