@@ -23,16 +23,14 @@ export const metadata: Metadata = {
     "Dashboard financeiro 360° com Open Finance, IA de categorização e metas inteligentes.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="pt-BR"
       suppressHydrationWarning
       className={cn("h-full", "antialiased", inter.variable, jetbrains.variable, "font-sans")}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
