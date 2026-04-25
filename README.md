@@ -17,20 +17,22 @@ npm run dev
 
 ## Scripts
 
-| Comando                | Função            |
-| ---------------------- | ----------------- |
-| `npm run dev`          | Dev server        |
-| `npm run build`        | Build de produção |
-| `npm run typecheck`    | Checagem de tipos |
-| `npm test`             | Testes unitários  |
-| `npm run test:watch`   | Vitest watch mode |
-| `npm run lint`         | ESLint            |
-| `npm run format`       | Prettier write    |
-| `npm run format:check` | Prettier check    |
-| `npm run db:generate`  | Prisma generate   |
+| Comando                | Função                     |
+| ---------------------- | -------------------------- |
+| `npm run dev`          | Dev server                 |
+| `npm run build`        | Build de produção          |
+| `npm run typecheck`    | Checagem de tipos          |
+| `npm test`             | Testes unitários           |
+| `npm run test:watch`   | Vitest watch mode          |
+| `npm run lint`         | ESLint                     |
+| `npm run format`       | Prettier write             |
+| `npm run format:check` | Prettier check             |
+| `npm run db:generate`  | Prisma generate            |
+| `npm run db:check`     | Verificar conexão Supabase |
 
 ## Documentação
 
 - `../docs/PRD.md` — Product Requirements
 - `../docs/superpowers/plans/` — planos de implementação por milestone
+- `../docs/superpowers/plans/2026-04-25-m1-auth-multi-tenant.md` — M1 plan (Auth & Multi-tenant)
 - `AGENTS.md` — convenções para agentes/colaboradores
