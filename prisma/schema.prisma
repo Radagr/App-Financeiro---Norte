@@ -8,3 +8,6 @@ datasource db {
 }
 
 // Schemas reais virão por milestone (M1+)
+// Nota M1: Prisma 7 removeu `directUrl`. Para Supabase, usar @prisma/adapter-pg
+// (driver adapter) com a connection string pooled (pgbouncer) — adapter resolve a
+// limitação de pgbouncer em transactional pool mode.
