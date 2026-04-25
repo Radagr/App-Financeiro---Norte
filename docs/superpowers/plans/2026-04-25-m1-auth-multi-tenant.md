@@ -31,11 +31,13 @@
 No dashboard do projeto:
 
 **Settings → API:**
+
 - `Project URL` → cole em `NEXT_PUBLIC_SUPABASE_URL`
 - `anon public` → cole em `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `service_role secret` (clique "Reveal") → cole em `SUPABASE_SERVICE_ROLE_KEY` ⚠️ NUNCA exponha no client; só server-side.
 
 **Settings → Database → Connection string:**
+
 - Aba **Transaction (port 6543)** → cole em `DATABASE_URL` (este é o pooled, usado pelo runtime do app)
 - Aba **Session (port 5432)** → cole em `DIRECT_URL` (este é direto, usado por migrations)
 
@@ -118,6 +120,7 @@ app-norte/
 - [ ] **Step 1.1: Promover Supabase vars de optional para required**
 
 Replace `app-norte/src/lib/env.ts`:
+
 ```ts
 import { z } from "zod";
 
@@ -162,6 +165,7 @@ git commit -m "feat(env): require Supabase env vars for M1"
 - [ ] **Step 2.1: Install runtime deps**
 
 Run from `app-norte/`:
+
 ```bash
 npm install @supabase/ssr @supabase/supabase-js @prisma/adapter-pg pg
 npm install -D @types/pg
@@ -187,6 +191,7 @@ git commit -m "feat(deps): add Supabase SSR + Prisma pg adapter"
 - [ ] **Step 3.1: Adicionar User model**
 
 Replace `app-norte/prisma/schema.prisma`:
+
 ```prisma
 generator client {
   provider      = "prisma-client-js"
@@ -232,6 +237,7 @@ git commit -m "feat(db): add User model mirroring auth.users"
 - [ ] **Step 4.1: Substituir conteúdo de prisma.ts**
 
 Replace `app-norte/src/lib/prisma.ts`:
+
 ```ts
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
@@ -277,6 +283,7 @@ git commit -m "feat(db): wire Prisma 7 driver adapter for Supabase pgbouncer"
 - [ ] **Step 5.1: Criar migration**
 
 Run from `app-norte/`:
+
 ```bash
 npx prisma migrate dev --name init_users
 ```
@@ -309,6 +316,7 @@ Run: `mkdir -p supabase/migrations` (from `app-norte/`).
 Get current timestamp: `node -e "console.log(new Date().toISOString().replace(/[-:]/g,'').replace(/\..+/,'').slice(0,14))"` (e.g., `20260425190000`).
 
 Create `app-norte/supabase/migrations/<timestamp>_initial_rls.sql`:
+
 ```sql
 -- M1: RLS on public.users + trigger to mirror auth.users
 
@@ -370,6 +378,7 @@ git commit -m "feat(db): RLS on users + trigger mirroring auth.users to public.u
 ## Task 7: Supabase clients (server, browser, middleware helper)
 
 **Files:**
+
 - Create: `app-norte/src/lib/supabase/server.ts`
 - Create: `app-norte/src/lib/supabase/browser.ts`
 - Create: `app-norte/src/lib/supabase/middleware.ts`
@@ -377,6 +386,7 @@ git commit -m "feat(db): RLS on users + trigger mirroring auth.users to public.u
 - [ ] **Step 7.1: Server client (pra RSC e Route Handlers)**
 
 Create `app-norte/src/lib/supabase/server.ts`:
+
 ```ts
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -404,6 +414,7 @@ export async function createSupabaseServerClient() {
 - [ ] **Step 7.2: Browser client (pra Client Components)**
 
 Create `app-norte/src/lib/supabase/browser.ts`:
+
 ```ts
 import { createBrowserClient } from "@supabase/ssr";
 
@@ -417,6 +428,7 @@ export function createSupabaseBrowserClient() {
 - [ ] **Step 7.3: Middleware helper (refresh de sessão por request)**
 
 Create `app-norte/src/lib/supabase/middleware.ts`:
+
 ```ts
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
@@ -426,16 +438,22 @@ import { env } from "@/lib/env";
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
-    cookies: {
-      getAll: () => request.cookies.getAll(),
-      setAll: (cookiesToSet) => {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+  const supabase = createServerClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
+        },
       },
     },
-  });
+  );
 
   const {
     data: { user },
@@ -458,13 +476,14 @@ git commit -m "feat(auth): add Supabase server, browser, middleware clients"
 
 ---
 
-## Task 8: Next.js middleware — protect /app/*
+## Task 8: Next.js middleware — protect /app/\*
 
 **Files:** Create `app-norte/src/middleware.ts`
 
 - [ ] **Step 8.1: Implement middleware**
 
 Create `app-norte/src/middleware.ts`:
+
 ```ts
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -521,6 +540,7 @@ git commit -m "feat(auth): protect /app and /onboarding via middleware"
 - [ ] **Step 9.1: Implementar handler**
 
 Create `app-norte/src/app/auth/callback/route.ts`:
+
 ```ts
 import { NextResponse } from "next/server";
 
@@ -562,6 +582,7 @@ git commit -m "feat(auth): add callback route to exchange auth code for session"
 ## Task 10: tRPC context + protectedProcedure + auth.whoami
 
 **Files:**
+
 - Modify: `app-norte/src/server/trpc/context.ts`
 - Modify: `app-norte/src/server/trpc/trpc.ts`
 - Create: `app-norte/src/server/trpc/routers/auth.ts`
@@ -571,6 +592,7 @@ git commit -m "feat(auth): add callback route to exchange auth code for session"
 - [ ] **Step 10.1: Test failing primeiro (TDD)**
 
 Create `app-norte/tests/unit/auth.whoami.test.ts`:
+
 ```ts
 import { describe, expect, it } from "vitest";
 
@@ -600,6 +622,7 @@ Run: `npm test` → expect failure with "Cannot read properties of undefined (re
 - [ ] **Step 10.3: Update context com user real**
 
 Replace `app-norte/src/server/trpc/context.ts`:
+
 ```ts
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 
@@ -629,6 +652,7 @@ export type Context = Awaited<ReturnType<typeof createContext>>;
 - [ ] **Step 10.4: Add protectedProcedure**
 
 Replace `app-norte/src/server/trpc/trpc.ts`:
+
 ```ts
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
@@ -649,6 +673,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
 - [ ] **Step 10.5: Auth router**
 
 Create `app-norte/src/server/trpc/routers/auth.ts`:
+
 ```ts
 import { publicProcedure, router } from "../trpc";
 
@@ -659,9 +684,10 @@ export const authRouter = router({
 });
 ```
 
-- [ ] **Step 10.6: Mount no _app**
+- [ ] **Step 10.6: Mount no \_app**
 
 Replace `app-norte/src/server/trpc/routers/_app.ts`:
+
 ```ts
 import { router } from "../trpc";
 import { authRouter } from "./auth";
@@ -695,6 +721,7 @@ git commit -m "feat(api): add tRPC auth.whoami + protectedProcedure"
 ## Task 11: Login page (com pass de frontend-design)
 
 **Files:**
+
 - Create: `app-norte/src/app/(auth)/layout.tsx`
 - Create: `app-norte/src/app/(auth)/login/page.tsx`
 - Create: `app-norte/src/components/auth/login-form.tsx`
@@ -707,6 +734,7 @@ git commit -m "feat(api): add tRPC auth.whoami + protectedProcedure"
 - [ ] **Step 11.1: Adicionar shadcn primitives Input + Card + Label**
 
 Run from `app-norte/`:
+
 ```bash
 npx shadcn@latest add input card label
 ```
@@ -714,11 +742,12 @@ npx shadcn@latest add input card label
 - [ ] **Step 11.2: Layout do route group (auth)**
 
 Create `app-norte/src/app/(auth)/layout.tsx`:
+
 ```tsx
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-background relative flex min-h-screen items-center justify-center p-6">
-      <div className="from-norte-light/30 pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b to-transparent dark:from-norte-secondary/10" />
+      <div className="from-norte-light/30 dark:from-norte-secondary/10 pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b to-transparent" />
       {children}
     </div>
   );
@@ -728,6 +757,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 - [ ] **Step 11.3: LoginForm (client component)**
 
 Create `app-norte/src/components/auth/login-form.tsx`:
+
 ```tsx
 "use client";
 
@@ -773,8 +803,8 @@ export function LoginForm({ next }: { next?: string }) {
       <div className="space-y-2 text-center">
         <p className="text-norte-primary text-lg font-medium dark:text-white">Cheque seu email</p>
         <p className="text-muted-foreground text-sm">
-          Enviamos um link mágico para <span className="font-mono">{email}</span>. Clique nele
-          para entrar.
+          Enviamos um link mágico para <span className="font-mono">{email}</span>. Clique nele para
+          entrar.
         </p>
       </div>
     );
@@ -811,17 +841,12 @@ export function LoginForm({ next }: { next?: string }) {
 - [ ] **Step 11.4: Login page**
 
 Create `app-norte/src/app/(auth)/login/page.tsx`:
+
 ```tsx
 import Link from "next/link";
 
 import { LoginForm } from "@/components/auth/login-form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type SearchParams = Promise<{ next?: string; error?: string }>;
 
@@ -883,6 +908,7 @@ git commit -m "feat(auth): login page with magic link form"
 ## Task 12: Onboarding page (com pass de frontend-design)
 
 **Files:**
+
 - Create: `app-norte/src/app/(app)/onboarding/page.tsx`
 - Create: `app-norte/src/app/(app)/layout.tsx`
 
@@ -893,6 +919,7 @@ git commit -m "feat(auth): login page with magic link form"
 - [ ] **Step 12.1: Layout do route group (app)**
 
 Create `app-norte/src/app/(app)/layout.tsx`:
+
 ```tsx
 import { redirect } from "next/navigation";
 
@@ -924,17 +951,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 - [ ] **Step 12.2: Onboarding form (server action)**
 
 Create `app-norte/src/app/(app)/onboarding/page.tsx`:
+
 ```tsx
 import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { prisma } from "@/lib/prisma";
@@ -1021,6 +1043,7 @@ git commit -m "feat(auth): protected app layout + onboarding form"
 - [ ] **Step 13.1: Implementar /app**
 
 Create `app-norte/src/app/(app)/app/page.tsx`:
+
 ```tsx
 import { redirect } from "next/navigation";
 
@@ -1041,7 +1064,7 @@ export default async function AppPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div className="space-y-1">
-        <p className="text-muted-foreground text-xs uppercase tracking-[0.2em]">m1 — auth ok</p>
+        <p className="text-muted-foreground text-xs tracking-[0.2em] uppercase">m1 — auth ok</p>
         <h1 className="text-norte-primary text-3xl font-semibold tracking-tight dark:text-white">
           Olá, {dbUser.name}
         </h1>
@@ -1049,14 +1072,12 @@ export default async function AppPage() {
           Você está autenticado. Em M3 esta tela vira o dashboard 360°.
         </p>
       </div>
-      <div className="border-border bg-card text-card-foreground rounded-lg border p-4 shadow-card">
+      <div className="border-border bg-card text-card-foreground shadow-card rounded-lg border p-4">
         <p className="text-sm">
           <span className="text-muted-foreground">email:</span>{" "}
           <span className="font-mono">{dbUser.email}</span>
         </p>
-        <p className="tabular text-muted-foreground mt-1 text-xs">
-          user.id: {dbUser.id}
-        </p>
+        <p className="tabular text-muted-foreground mt-1 text-xs">user.id: {dbUser.id}</p>
       </div>
       <LogoutButton />
     </div>
@@ -1071,12 +1092,14 @@ export default async function AppPage() {
 ## Task 14: Logout + final M1 wiring
 
 **Files:**
+
 - Create: `app-norte/src/components/auth/logout-button.tsx`
 - Create: `app-norte/src/app/api/auth/logout/route.ts`
 
 - [ ] **Step 14.1: Logout route handler**
 
 Create `app-norte/src/app/api/auth/logout/route.ts`:
+
 ```ts
 import { NextResponse } from "next/server";
 
@@ -1092,6 +1115,7 @@ export async function POST() {
 - [ ] **Step 14.2: LogoutButton component**
 
 Create `app-norte/src/components/auth/logout-button.tsx`:
+
 ```tsx
 "use client";
 
@@ -1126,6 +1150,7 @@ export function LogoutButton() {
 - [ ] **Step 14.3: Run all gates**
 
 Run from `app-norte/`:
+
 ```bash
 npm run format
 npm run lint
@@ -1148,6 +1173,7 @@ git commit -m "feat(auth): /app placeholder + logout flow"
 ## Task 15: Update env.example and docs
 
 **Files:**
+
 - Modify: `app-norte/.env.example` (já cobre Supabase via M0; só validar)
 - Modify: `app-norte/AGENTS.md` (adicionar nota sobre RLS + protectedProcedure)
 - Modify: `app-norte/README.md` (referenciar M1 plan)
@@ -1155,21 +1181,24 @@ git commit -m "feat(auth): /app placeholder + logout flow"
 - [ ] **Step 15.1: Append em AGENTS.md (depois das Convenções existentes)**
 
 Append at end of `app-norte/AGENTS.md`:
-```markdown
 
+```markdown
 ## M1 — Auth conventions
 
 ### Autenticação
+
 - Supabase Auth gerencia `auth.users`. Trigger SQL espelha em `public.users`.
 - Server-side: `createSupabaseServerClient()` de `@/lib/supabase/server`.
 - Browser-side: `createSupabaseBrowserClient()` de `@/lib/supabase/browser`.
 - Middleware (`src/middleware.ts`) refresca sessão e protege `/app/*` e `/onboarding`.
 
 ### tRPC
+
 - `protectedProcedure` (em `@/server/trpc/trpc`) lança `UNAUTHORIZED` se `ctx.user` for null.
 - Use sempre `protectedProcedure` quando a operação tocar dados do usuário.
 
 ### RLS
+
 - Toda tabela com user_id deve ter RLS habilitada.
 - Policies em `supabase/migrations/*.sql` aplicadas via Supabase Dashboard SQL Editor.
 - Padrão: `using (auth.uid() = user_id)` pra SELECT/UPDATE/DELETE.
@@ -1178,6 +1207,7 @@ Append at end of `app-norte/AGENTS.md`:
 - [ ] **Step 15.2: Add M1 plan link no README.md**
 
 Edit `app-norte/README.md` "Documentação" section adicionando linha:
+
 ```markdown
 - `../docs/superpowers/plans/2026-04-25-m1-auth-multi-tenant.md` — M1 plan (Auth & Multi-tenant)
 ```
@@ -1210,6 +1240,7 @@ git commit -m "docs: M1 conventions for auth + RLS + tRPC protected procedures"
 ## Self-Review
 
 **1. Spec coverage (PRD §6.1 RF-1.1 a RF-1.5):**
+
 - ✅ RF-1.1 Magic link → Task 11
 - ⏸ RF-1.2 OAuth Google → adiado pra hotfix de M1 ou M2 (escolha consciente: magic link cobre 90% dos use cases; Google requer OAuth credentials Google Cloud Console que adiciona setup; YAGNI pra MVP demo)
 - ✅ RF-1.3 Onboarding nome → Task 12
@@ -1223,6 +1254,7 @@ git commit -m "docs: M1 conventions for auth + RLS + tRPC protected procedures"
 **3. Type consistency:** `SessionUser`, `Context`, `appRouter`, `protectedProcedure`, `createSupabaseServerClient`, `createSupabaseBrowserClient`, `updateSession` consistentes em todas as tasks.
 
 **4. Critical path validation:**
+
 - Task 1 (env) → Task 2 (deps) → Task 3 (schema) → Task 4 (prisma rewrite) → **Task 5 requires Step 0** → Task 6 (RLS via dashboard) → Task 7 (clients) → Task 8 (middleware) → Task 9 (callback) → Task 10 (tRPC) → Task 11 (login) → Task 12 (onboarding) → Task 13 (app) → Task 14 (logout) → Task 15 (docs)
 - Login flow só funciona end-to-end depois de Tasks 6, 7, 8, 9 todas. Tasks 10–14 podem ser paralelizadas em parte se necessário, mas dependem de 7+ pra ler o user.
 

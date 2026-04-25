@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Claude Code skill cache mounts
+    "frontend-design/**",
+    "superpowers/**",
   ]),
 ]);
 

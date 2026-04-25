@@ -16,17 +16,17 @@
 
 ## Milestone Roadmap
 
-| ID | Título | Sessões | Depende | Deliverable |
-|---|---|---|---|---|
-| M0 | Foundation & Setup | 1 | — | Projeto bootado, design system, banco, tRPC, primeira tela |
-| M1 | Auth & Multi-tenant | 1 | M0 | Login funcional + RLS + onboarding |
-| M2 | Landing + Stripe | 1 | M1 | Landing institucional + checkout funcional |
-| M3 | Dashboard 360° (mock) | 1-2 | M1 | 5 módulos com fake data, design polido |
-| M4 | Importação manual | 1 | M3 | CSV/XLSX/OFX → banco com mapeamento |
-| M5 | Pluggy Open Finance | 2 | M4 | Sync de contas, cartões, corretoras BR |
-| M6 | Categorização IA | 1 | M5 | Claude Haiku + regras aprendidas |
-| M7 | Metas financeiras | 1 | M3 | CRUD + cálculo de aporte + alertas |
-| M8 | Insights + Relatório | 1 | M6, M7 | Email mensal automático + inbox de alertas |
+| ID  | Título                | Sessões | Depende | Deliverable                                                |
+| --- | --------------------- | ------- | ------- | ---------------------------------------------------------- |
+| M0  | Foundation & Setup    | 1       | —       | Projeto bootado, design system, banco, tRPC, primeira tela |
+| M1  | Auth & Multi-tenant   | 1       | M0      | Login funcional + RLS + onboarding                         |
+| M2  | Landing + Stripe      | 1       | M1      | Landing institucional + checkout funcional                 |
+| M3  | Dashboard 360° (mock) | 1-2     | M1      | 5 módulos com fake data, design polido                     |
+| M4  | Importação manual     | 1       | M3      | CSV/XLSX/OFX → banco com mapeamento                        |
+| M5  | Pluggy Open Finance   | 2       | M4      | Sync de contas, cartões, corretoras BR                     |
+| M6  | Categorização IA      | 1       | M5      | Claude Haiku + regras aprendidas                           |
+| M7  | Metas financeiras     | 1       | M3      | CRUD + cálculo de aporte + alertas                         |
+| M8  | Insights + Relatório  | 1       | M6, M7  | Email mensal automático + inbox de alertas                 |
 
 **Estratégia:** este documento detalha **M0 task-a-task**. M1+ tem outline com objetivos e exit criteria. **O plano detalhado de cada milestone seguinte será escrito ao iniciar a milestone**, aproveitando aprendizado das anteriores. Isso evita planejamento especulativo (YAGNI) que vira documentação morta.
 
@@ -98,6 +98,7 @@ app-norte/
 ### Task 1: Verificar Node + criar projeto Next.js
 
 **Files:**
+
 - Create: `app-norte/` (via `create-next-app`)
 
 - [ ] **Step 1.1: Verificar Node 20+**
@@ -108,14 +109,17 @@ Expected: `v20.x.x` ou superior. Se inferior ou ausente: instalar via https://no
 - [ ] **Step 1.2: Criar projeto Next.js 15 com TypeScript + Tailwind + App Router**
 
 Run (na raiz `App Financeiro/`):
+
 ```bash
 npx create-next-app@latest app-norte --typescript --tailwind --app --eslint --src-dir --import-alias "@/*" --no-turbopack --use-npm
 ```
+
 Aceitar todos os defaults adicionais. Expected: pasta `app-norte/` criada com estrutura padrão.
 
 - [ ] **Step 1.3: Init git e primeiro commit**
 
 Run:
+
 ```bash
 cd app-norte
 git init
@@ -126,11 +130,13 @@ git commit -m "chore: bootstrap Next.js 15 + TS + Tailwind"
 - [ ] **Step 1.4: Adicionar `.nvmrc`**
 
 Create `.nvmrc`:
+
 ```
 20
 ```
 
 Run:
+
 ```bash
 git add .nvmrc && git commit -m "chore: pin node version via .nvmrc"
 ```
@@ -140,11 +146,13 @@ git add .nvmrc && git commit -m "chore: pin node version via .nvmrc"
 ### Task 2: TypeScript estrito
 
 **Files:**
+
 - Modify: `tsconfig.json`
 
 - [ ] **Step 2.1: Habilitar flags estritas**
 
 Edit `tsconfig.json` `compilerOptions` adicionando:
+
 ```json
 {
   "strict": true,
@@ -164,6 +172,7 @@ Expected: 0 erros.
 - [ ] **Step 2.3: Adicionar script `typecheck`**
 
 Edit `package.json` `scripts`:
+
 ```json
 "typecheck": "tsc --noEmit"
 ```
@@ -180,6 +189,7 @@ git commit -m "chore: enable strict TypeScript"
 ### Task 3: Design tokens Norte no Tailwind v4
 
 **Files:**
+
 - Modify: `app-norte/src/app/globals.css`
 
 > Tailwind v4 não tem mais `tailwind.config.ts`. Toda a configuração de tema fica no CSS via `@theme` (estática) e CSS vars (dinâmicas com light/dark). O bloco `@theme inline` mapeia `--color-*` pra vars HSL definidas em `:root` / `.dark`, permitindo dark mode via classe.
@@ -187,6 +197,7 @@ git commit -m "chore: enable strict TypeScript"
 - [ ] **Step 3.1: Substituir `globals.css` com paleta Norte e tokens light/dark**
 
 Replace `app-norte/src/app/globals.css` content:
+
 ```css
 @import "tailwindcss";
 
@@ -213,13 +224,13 @@ Replace `app-norte/src/app/globals.css` content:
 }
 
 @theme inline {
-  --color-norte-primary: #0F3D2E;
-  --color-norte-secondary: #1A6E4F;
-  --color-norte-light: #E8F5EE;
-  --color-norte-info: #1E3A5F;
-  --color-norte-warn: #D4A017;
-  --color-norte-positive: #16A34A;
-  --color-norte-negative: #DC2626;
+  --color-norte-primary: #0f3d2e;
+  --color-norte-secondary: #1a6e4f;
+  --color-norte-light: #e8f5ee;
+  --color-norte-info: #1e3a5f;
+  --color-norte-warn: #d4a017;
+  --color-norte-positive: #16a34a;
+  --color-norte-negative: #dc2626;
   --color-norte-ink: #111827;
 
   --color-background: hsl(var(--background));
@@ -269,11 +280,13 @@ git commit -m "feat(design): add Norte palette and theme tokens for Tailwind v4"
 ### Task 4: Fontes Inter + JetBrains Mono
 
 **Files:**
+
 - Modify: `src/app/layout.tsx`
 
 - [ ] **Step 4.1: Carregar fontes via next/font**
 
 Replace `src/app/layout.tsx` content:
+
 ```tsx
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
@@ -297,9 +310,7 @@ export const metadata: Metadata = {
     "Dashboard financeiro 360° com Open Finance, IA de categorização e metas inteligentes.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${jetbrains.variable}`}>
       <body>{children}</body>
@@ -325,6 +336,7 @@ git commit -m "feat(design): load Inter and JetBrains Mono via next/font"
 ### Task 5: Dark mode com next-themes
 
 **Files:**
+
 - Create: `src/components/theme-provider.tsx`
 - Modify: `src/app/layout.tsx`
 
@@ -335,16 +347,14 @@ Run: `npm install next-themes`
 - [ ] **Step 5.2: Criar ThemeProvider**
 
 Create `src/components/theme-provider.tsx`:
+
 ```tsx
 "use client";
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ComponentProps } from "react";
 
-export function ThemeProvider({
-  children,
-  ...props
-}: ComponentProps<typeof NextThemesProvider>) {
+export function ThemeProvider({ children, ...props }: ComponentProps<typeof NextThemesProvider>) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 ```
@@ -352,18 +362,15 @@ export function ThemeProvider({
 - [ ] **Step 5.3: Wrapping no root layout**
 
 Edit `src/app/layout.tsx` `RootLayout` body:
+
 ```tsx
 <body>
-  <ThemeProvider
-    attribute="class"
-    defaultTheme="system"
-    enableSystem
-    disableTransitionOnChange
-  >
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
     {children}
   </ThemeProvider>
 </body>
 ```
+
 Adicionar import: `import { ThemeProvider } from "@/components/theme-provider";`
 
 Adicionar `suppressHydrationWarning` no `<html>` tag.
@@ -380,6 +387,7 @@ git commit -m "feat(design): add dark mode via next-themes"
 ### Task 6: shadcn/ui
 
 **Files:**
+
 - Create: `components.json`
 - Create: `src/lib/utils.ts`
 - Create: `src/components/ui/button.tsx` (via CLI)
@@ -387,9 +395,11 @@ git commit -m "feat(design): add dark mode via next-themes"
 - [ ] **Step 6.1: Init shadcn**
 
 Run:
+
 ```bash
 npx shadcn@latest init -y --base-color slate
 ```
+
 Aceitar defaults compatíveis com a estrutura `src/`. Confirmar `components.json` criado.
 
 - [ ] **Step 6.2: Adicionar Button como sanity check**
@@ -413,6 +423,7 @@ git commit -m "feat(ui): bootstrap shadcn/ui with Button component"
 ### Task 7: Env parsing com Zod
 
 **Files:**
+
 - Create: `src/lib/env.ts`
 - Create: `.env.example`
 - Modify: `.gitignore` (verificar `.env*.local`)
@@ -424,6 +435,7 @@ Run: `npm install zod`
 - [ ] **Step 7.2: Criar `.env.example`**
 
 Create `.env.example`:
+
 ```
 # --- M0 (foundation) ---
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -459,6 +471,7 @@ UPSTASH_REDIS_REST_TOKEN=
 - [ ] **Step 7.3: Criar parser de env**
 
 Create `src/lib/env.ts`:
+
 ```ts
 import { z } from "zod";
 
@@ -487,9 +500,11 @@ export const env = parsed.data;
 - [ ] **Step 7.4: Criar `.env.local` vazio (local-only)**
 
 Run:
+
 ```bash
 cp .env.example .env.local
 ```
+
 Conferir `.gitignore` contém `.env*.local`.
 
 - [ ] **Step 7.5: Commit**
@@ -504,6 +519,7 @@ git commit -m "feat(env): add Zod-validated environment parser"
 ### Task 8: Prisma + Supabase scaffold
 
 **Files:**
+
 - Create: `prisma/schema.prisma`
 - Create: `src/lib/prisma.ts`
 
@@ -518,6 +534,7 @@ Run: `npx prisma init --datasource-provider postgresql`
 - [ ] **Step 8.3: Configurar schema**
 
 Replace `prisma/schema.prisma` content:
+
 ```prisma
 generator client {
   provider      = "prisma-client-js"
@@ -536,6 +553,7 @@ datasource db {
 - [ ] **Step 8.4: Singleton PrismaClient**
 
 Create `src/lib/prisma.ts`:
+
 ```ts
 import { PrismaClient } from "@prisma/client";
 
@@ -569,6 +587,7 @@ git commit -m "feat(db): scaffold Prisma with PostgreSQL datasource"
 ### Task 9: tRPC v11 setup
 
 **Files:**
+
 - Create: `src/server/trpc/trpc.ts`
 - Create: `src/server/trpc/context.ts`
 - Create: `src/server/trpc/routers/_app.ts`
@@ -581,6 +600,7 @@ git commit -m "feat(db): scaffold Prisma with PostgreSQL datasource"
 - [ ] **Step 9.1: Instalar deps tRPC**
 
 Run:
+
 ```bash
 npm install @trpc/server@next @trpc/client@next @trpc/react-query@next @tanstack/react-query@^5 superjson
 ```
@@ -588,6 +608,7 @@ npm install @trpc/server@next @trpc/client@next @trpc/react-query@next @tanstack
 - [ ] **Step 9.2: Init tRPC**
 
 Create `src/server/trpc/trpc.ts`:
+
 ```ts
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
@@ -602,6 +623,7 @@ export const publicProcedure = t.procedure;
 - [ ] **Step 9.3: Context placeholder**
 
 Create `src/server/trpc/context.ts`:
+
 ```ts
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 
@@ -615,6 +637,7 @@ export type Context = Awaited<ReturnType<typeof createContext>>;
 - [ ] **Step 9.4: Router health (placeholder, será testado na Task 10)**
 
 Create `src/server/trpc/routers/health.ts`:
+
 ```ts
 import { router, publicProcedure } from "../trpc";
 
@@ -626,6 +649,7 @@ export const healthRouter = router({
 - [ ] **Step 9.5: AppRouter**
 
 Create `src/server/trpc/routers/_app.ts`:
+
 ```ts
 import { router } from "../trpc";
 import { healthRouter } from "./health";
@@ -640,6 +664,7 @@ export type AppRouter = typeof appRouter;
 - [ ] **Step 9.6: Route handler Next.js**
 
 Create `src/app/api/trpc/[trpc]/route.ts`:
+
 ```ts
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "@/server/trpc/routers/_app";
@@ -659,6 +684,7 @@ export { handler as GET, handler as POST };
 - [ ] **Step 9.7: Client tRPC**
 
 Create `src/trpc/client.ts`:
+
 ```ts
 import { createTRPCReact } from "@trpc/react-query";
 import type { AppRouter } from "@/server/trpc/routers/_app";
@@ -669,6 +695,7 @@ export const trpc = createTRPCReact<AppRouter>();
 - [ ] **Step 9.8: Provider**
 
 Create `src/trpc/provider.tsx`:
+
 ```tsx
 "use client";
 
@@ -696,6 +723,7 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
 - [ ] **Step 9.9: Wrappar no layout**
 
 Edit `src/app/layout.tsx` body:
+
 ```tsx
 <body>
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -703,6 +731,7 @@ Edit `src/app/layout.tsx` body:
   </ThemeProvider>
 </body>
 ```
+
 Import: `import { TRPCProvider } from "@/trpc/provider";`
 
 - [ ] **Step 9.10: Build sanity**
@@ -722,6 +751,7 @@ git commit -m "feat(api): scaffold tRPC v11 with health.ping"
 ### Task 10: Vitest + primeiro teste TDD do health.ping
 
 **Files:**
+
 - Create: `vitest.config.ts`
 - Create: `tests/unit/health.test.ts`
 - Modify: `package.json`
@@ -733,6 +763,7 @@ Run: `npm install -D vitest @vitejs/plugin-react vite-tsconfig-paths`
 - [ ] **Step 10.2: Config Vitest**
 
 Create `vitest.config.ts`:
+
 ```ts
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -749,6 +780,7 @@ export default defineConfig({
 - [ ] **Step 10.3: Adicionar scripts**
 
 Edit `package.json` `scripts`:
+
 ```json
 "test": "vitest run",
 "test:watch": "vitest"
@@ -757,6 +789,7 @@ Edit `package.json` `scripts`:
 - [ ] **Step 10.4: Escrever teste failing primeiro**
 
 Create `tests/unit/health.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { appRouter } from "@/server/trpc/routers/_app";
@@ -792,6 +825,7 @@ git commit -m "test: add Vitest setup and health.ping contract test"
 ### Task 11: ESLint + Prettier
 
 **Files:**
+
 - Modify: `.eslintrc.json` (ou `eslint.config.mjs` dependendo do que o create-next-app gerou)
 - Create: `.prettierrc`
 - Create: `.prettierignore`
@@ -803,6 +837,7 @@ Run: `npm install -D prettier prettier-plugin-tailwindcss eslint-config-prettier
 - [ ] **Step 11.2: `.prettierrc`**
 
 Create `.prettierrc`:
+
 ```json
 {
   "semi": true,
@@ -817,6 +852,7 @@ Create `.prettierrc`:
 - [ ] **Step 11.3: `.prettierignore`**
 
 Create `.prettierignore`:
+
 ```
 .next
 node_modules
@@ -831,6 +867,7 @@ Edit ESLint config (formato gerado pelo create-next-app) adicionando `"prettier"
 - [ ] **Step 11.5: Adicionar scripts**
 
 Edit `package.json` `scripts`:
+
 ```json
 "format": "prettier --write .",
 "format:check": "prettier --check ."
@@ -854,11 +891,13 @@ git commit -m "chore: configure Prettier + Tailwind plugin and align ESLint"
 ### Task 12: Home placeholder com identidade Norte
 
 **Files:**
+
 - Modify: `src/app/page.tsx`
 
 - [ ] **Step 12.1: Substituir home pelo placeholder Norte**
 
 Replace `src/app/page.tsx` content:
+
 ```tsx
 import { Button } from "@/components/ui/button";
 
@@ -866,22 +905,18 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-16">
       <div className="flex flex-col items-center gap-2 text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+        <p className="text-muted-foreground font-mono text-xs tracking-[0.2em] uppercase">
           em construção
         </p>
-        <h1 className="text-5xl font-semibold tracking-tight text-norte-primary md:text-6xl">
+        <h1 className="text-norte-primary text-5xl font-semibold tracking-tight md:text-6xl">
           Norte
         </h1>
-        <p className="max-w-md text-balance text-base text-muted-foreground md:text-lg">
+        <p className="text-muted-foreground max-w-md text-base text-balance md:text-lg">
           Sua vida financeira em um só lugar — saldo, fluxo, patrimônio e metas.
         </p>
       </div>
-      <Button className="bg-norte-primary text-white hover:bg-norte-secondary">
-        Em breve
-      </Button>
-      <p className="tabular text-xs text-muted-foreground">
-        v0.0.1 · M0 foundation
-      </p>
+      <Button className="bg-norte-primary hover:bg-norte-secondary text-white">Em breve</Button>
+      <p className="tabular text-muted-foreground text-xs">v0.0.1 · M0 foundation</p>
     </main>
   );
 }
@@ -891,6 +926,7 @@ export default function Home() {
 
 Run: `npm run dev` (background)
 Abrir `http://localhost:3000`. Validar:
+
 - "Norte" em verde escuro Inter semibold
 - Subtítulo em cinza
 - Botão verde com hover mais claro
@@ -910,6 +946,7 @@ git commit -m "feat(ui): add Norte landing placeholder with brand palette"
 ### Task 13: README + CLAUDE.md
 
 **Files:**
+
 - Modify: `app-norte/README.md`
 - Modify: `app-norte/CLAUDE.md` (auto-gerado pelo create-next-app v16 — vamos preservar o que veio e adicionar nossas convenções)
 - Modify: `app-norte/AGENTS.md` (auto-gerado — vamos preservar)
@@ -919,7 +956,8 @@ git commit -m "feat(ui): add Norte landing placeholder with brand palette"
 - [ ] **Step 13.1: README**
 
 Replace `app-norte/README.md` content:
-```markdown
+
+````markdown
 # Norte
 
 Plataforma de gestão financeira pessoal — dashboard 360°, Open Finance, IA de categorização, metas inteligentes.
@@ -936,23 +974,25 @@ npm install
 cp .env.example .env.local   # preencher conforme cada milestone
 npm run dev
 ```
+````
 
 ## Scripts
 
-| Comando | Função |
-|---|---|
-| `npm run dev` | Dev server |
-| `npm run build` | Build de produção |
+| Comando             | Função            |
+| ------------------- | ----------------- |
+| `npm run dev`       | Dev server        |
+| `npm run build`     | Build de produção |
 | `npm run typecheck` | Checagem de tipos |
-| `npm test` | Testes unitários |
-| `npm run lint` | ESLint |
-| `npm run format` | Prettier write |
+| `npm test`          | Testes unitários  |
+| `npm run lint`      | ESLint            |
+| `npm run format`    | Prettier write    |
 
 ## Documentação
 
 - `docs/PRD.md` — Product Requirements
 - `docs/superpowers/plans/` — planos de implementação por milestone
-```
+
+````
 
 - [ ] **Step 13.2: Append Norte conventions ao CLAUDE.md auto-gerado**
 
@@ -986,13 +1026,13 @@ Comunicação em português. Identificadores de código, mensagens de commit e n
 
 ### Antes de commitar
 `npm run typecheck && npm test && npm run lint`. Se algum falhar, não commitar.
-```
+````
 
 - [ ] **Step 13.3: Append Norte conventions ao AGENTS.md auto-gerado**
 
 Append ao final de `app-norte/AGENTS.md` (preservando o que veio):
-```markdown
 
+```markdown
 ---
 
 ## Convenções específicas do Norte

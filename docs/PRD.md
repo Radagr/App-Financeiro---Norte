@@ -61,14 +61,14 @@ Lacuna: **visibilidade 360° + IA de categorização + projeção de metas + foc
 
 ### 4.2 KPIs (12 meses pós-launch)
 
-| Métrica | Meta |
-|---|---|
-| MAU | 5.000 |
-| Conversão free → Plus | 8% |
-| Churn mensal Plus+Pro | <5% |
-| Contas conectadas/usuário ativo | ≥2,5 |
-| NPS | ≥50 |
-| Retention W4 | ≥40% |
+| Métrica                         | Meta  |
+| ------------------------------- | ----- |
+| MAU                             | 5.000 |
+| Conversão free → Plus           | 8%    |
+| Churn mensal Plus+Pro           | <5%   |
+| Contas conectadas/usuário ativo | ≥2,5  |
+| NPS                             | ≥50   |
+| Retention W4                    | ≥40%  |
 
 ---
 
@@ -230,25 +230,25 @@ Lacuna: **visibilidade 360° + IA de categorização + projeção de metas + foc
 
 ## 8. Stack Técnica
 
-| Camada | Tecnologia |
-|---|---|
-| Framework | Next.js 15 (App Router, RSC) |
-| UI | React 19, Tailwind v4, shadcn/ui 4.5 (Base UI primitives) |
-| Charts | Recharts |
-| API | tRPC, Zod |
-| ORM | Prisma |
-| Banco | Supabase Postgres + RLS |
-| Auth | Supabase Auth (magic link + Google) |
-| Pagamentos | Stripe (Checkout + Webhooks) |
-| Open Finance | Pluggy |
-| IA | Claude API (Haiku + Sonnet) |
-| Email | Resend + React Email |
-| Cache | Upstash Redis |
-| Cron | Vercel Cron + Supabase pg_cron |
-| Testes | Vitest + Playwright |
-| Observabilidade | Sentry, PostHog |
-| Hosting | Vercel |
-| CI/CD | GitHub Actions |
+| Camada          | Tecnologia                                                |
+| --------------- | --------------------------------------------------------- |
+| Framework       | Next.js 15 (App Router, RSC)                              |
+| UI              | React 19, Tailwind v4, shadcn/ui 4.5 (Base UI primitives) |
+| Charts          | Recharts                                                  |
+| API             | tRPC, Zod                                                 |
+| ORM             | Prisma                                                    |
+| Banco           | Supabase Postgres + RLS                                   |
+| Auth            | Supabase Auth (magic link + Google)                       |
+| Pagamentos      | Stripe (Checkout + Webhooks)                              |
+| Open Finance    | Pluggy                                                    |
+| IA              | Claude API (Haiku + Sonnet)                               |
+| Email           | Resend + React Email                                      |
+| Cache           | Upstash Redis                                             |
+| Cron            | Vercel Cron + Supabase pg_cron                            |
+| Testes          | Vitest + Playwright                                       |
+| Observabilidade | Sentry, PostHog                                           |
+| Hosting         | Vercel                                                    |
+| CI/CD           | GitHub Actions                                            |
 
 ---
 
@@ -278,14 +278,14 @@ Referências (em ordem):
 
 ## 10. Riscos & Mitigações
 
-| Risco | Prob. | Impacto | Mitigação |
-|---|---|---|---|
-| Pluggy fora do ar / instável | M | A | Fallback CSV/OFX como caminho oficial |
-| Custo Claude API explode | M | M | Cache agressivo + Haiku como default, Sonnet só batch |
-| Stripe webhook falha em prod | B | A | Idempotency keys + retry + alertas Sentry |
-| Performance ruim com >10k transações | M | M | Paginação obrigatória + índices Postgres |
-| Categorização IA erra muito | A | M | Sistema de regras aprendidas + UI fácil de corrigir |
-| Compliance LGPD com dados bancários | M | A | Auditoria jurídica antes do launch |
+| Risco                                | Prob. | Impacto | Mitigação                                             |
+| ------------------------------------ | ----- | ------- | ----------------------------------------------------- |
+| Pluggy fora do ar / instável         | M     | A       | Fallback CSV/OFX como caminho oficial                 |
+| Custo Claude API explode             | M     | M       | Cache agressivo + Haiku como default, Sonnet só batch |
+| Stripe webhook falha em prod         | B     | A       | Idempotency keys + retry + alertas Sentry             |
+| Performance ruim com >10k transações | M     | M       | Paginação obrigatória + índices Postgres              |
+| Categorização IA erra muito          | A     | M       | Sistema de regras aprendidas + UI fácil de corrigir   |
+| Compliance LGPD com dados bancários  | M     | A       | Auditoria jurídica antes do launch                    |
 
 ---
 
