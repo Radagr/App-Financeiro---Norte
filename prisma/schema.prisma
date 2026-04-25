@@ -7,7 +7,23 @@ datasource db {
   provider = "postgresql"
 }
 
-// Schemas reais virão por milestone (M1+)
-// Nota M1: Prisma 7 removeu `directUrl`. Para Supabase, usar @prisma/adapter-pg
-// (driver adapter) com a connection string pooled (pgbouncer) — adapter resolve a
-// limitação de pgbouncer em transactional pool mode.
+// O schema canônico é mantido em supabase/migrations/*.sql (DB-first).
+// Este arquivo serve para gerar tipos do Prisma Client. Quando o SQL mudar,
+// atualizar este arquivo manualmente em paralelo.
+//
+// Conexão Supabase: usamos @prisma/adapter-pg (driver adapter) na runtime
+// porque Prisma 7 removeu `directUrl` do schema. O adapter aceita a string
+// pooled (pgbouncer) sem limitações.
+
+/// Mirror de auth.users (Supabase Auth) com campos de domínio do Norte.
+/// Row criada automaticamente por trigger SQL (vide supabase/migrations).
+model User {
+  id          String    @id @db.Uuid
+  email       String    @unique
+  name        String?
+  onboardedAt DateTime? @map("onboarded_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
+}
