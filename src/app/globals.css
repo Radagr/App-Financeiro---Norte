@@ -14,36 +14,41 @@
   --muted: 210 30% 96%;
   --muted-foreground: 215 16% 47%;
 
-  /* shadcn-specific tokens */
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* shadcn semantic tokens — bridged to Norte palette (HSL) */
+  --primary: 160 60% 15%; /* #0F3D2E norte-primary */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 141 39% 93%; /* #E8F5EE norte-light */
+  --secondary-foreground: 160 60% 15%;
+  --accent: 141 39% 93%;
+  --accent-foreground: 160 60% 15%;
+  --destructive: 0 73% 51%; /* #DC2626 norte-negative */
+  --destructive-foreground: 0 0% 100%;
+  --ring: 158 62% 27%; /* #1A6E4F norte-secondary */
+  --input: 220 14% 91%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 13% 11%;
+
+  /* Charts — 6 cores derivadas (PRD §9). Spread por matiz, saturação/brilho consistentes. */
+  --chart-1: 160 60% 24%; /* verde profundo (norte-primary deeper) */
+  --chart-2: 174 50% 35%; /* teal */
+  --chart-3: 43 75% 50%; /* dourado (warn) */
+  --chart-4: 218 45% 40%; /* azul profundo (info) */
+  --chart-5: 25 70% 55%; /* terracota */
+  --chart-6: 340 45% 50%; /* ameixa */
+
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 222 13% 11%;
+  --sidebar-primary: 160 60% 15%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 141 39% 93%;
+  --sidebar-accent-foreground: 160 60% 15%;
+  --sidebar-border: 220 14% 91%;
+  --sidebar-ring: 158 62% 27%;
 }
 
 .dark {
-  /* Norte verde-floresta HSL values — Norte wins for shared keys */
+  /* Norte verde-floresta HSL — Norte wins for shared keys */
   --background: 162 60% 6%;
   --foreground: 152 25% 92%;
   --card: 162 50% 9%;
@@ -52,31 +57,36 @@
   --muted: 162 30% 14%;
   --muted-foreground: 152 12% 65%;
 
-  /* shadcn-specific dark tokens */
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* shadcn semantic — Norte tokens adaptados pra dark (verde médio pra contraste em fundo escuro) */
+  --primary: 158 62% 38%; /* norte-secondary clareado pra pop on dark bg */
+  --primary-foreground: 162 60% 6%;
+  --secondary: 162 30% 18%;
+  --secondary-foreground: 152 25% 92%;
+  --accent: 162 30% 18%;
+  --accent-foreground: 152 25% 92%;
+  --destructive: 0 70% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 158 62% 45%;
+  --input: 162 30% 18%;
+  --popover: 162 50% 9%;
+  --popover-foreground: 152 25% 92%;
+
+  /* Charts dark — mesmas hues, lightness +10-15% pra legibilidade em fundo escuro */
+  --chart-1: 160 55% 45%;
+  --chart-2: 174 50% 50%;
+  --chart-3: 43 80% 60%;
+  --chart-4: 218 55% 55%;
+  --chart-5: 25 75% 65%;
+  --chart-6: 340 55% 65%;
+
+  --sidebar: 162 50% 9%;
+  --sidebar-foreground: 152 25% 92%;
+  --sidebar-primary: 158 62% 38%;
+  --sidebar-primary-foreground: 162 60% 6%;
+  --sidebar-accent: 162 30% 18%;
+  --sidebar-accent-foreground: 152 25% 92%;
+  --sidebar-border: 162 30% 18%;
+  --sidebar-ring: 158 62% 45%;
 }
 
 @theme inline {
@@ -111,31 +121,33 @@
   /* Norte shadow */
   --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.04), 0 1px 3px 0 rgb(0 0 0 / 0.06);
 
-  /* shadcn color mappings */
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  /* shadcn color mappings (now all HSL-based, bridged a Norte) */
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  --color-chart-6: hsl(var(--chart-6));
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
 
   /* shadcn radius tokens */
   --radius-xl: calc(var(--radius) * 1.4);
@@ -145,6 +157,12 @@
 
   /* shadcn heading font */
   --font-heading: var(--font-sans);
+
+  /* Motion — PRD §9 microinterações 150-200ms */
+  --default-transition-duration: 180ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 @layer base {
