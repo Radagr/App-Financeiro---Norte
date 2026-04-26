@@ -1,25 +1,44 @@
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
+/**
+ * Landing page — Norte public homepage (M2 Task 11).
+ *
+ * Replaces the M0 placeholder with a full editorial landing:
+ *   Nav → Hero → Features → Beta Callout → FAQ → Footer
+ *
+ * Static Server Component. No client boundary needed at this level.
+ *
+ * Atmosphere is composed at the page level as a global background layer
+ * (center variant for the full-page gradient) with individual sections
+ * adding their own local Atmosphere layers for depth variation.
+ */
 
-export default function Home() {
+import { BetaCallout } from "@/components/landing/beta-callout";
+import { FAQ } from "@/components/landing/faq";
+import { Features } from "@/components/landing/features";
+import { Footer } from "@/components/landing/footer";
+import { Hero } from "@/components/landing/hero";
+import { Nav } from "@/components/landing/nav";
+
+export default function LandingPage() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-16">
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <p className="text-muted-foreground font-mono text-xs tracking-[0.2em] uppercase">
-          em construção
-        </p>
-        <h1 className="text-norte-primary text-5xl font-semibold tracking-tight md:text-6xl dark:text-white">
-          Norte
-        </h1>
-        <p className="text-muted-foreground max-w-md text-base text-balance md:text-lg">
-          Sua vida financeira em um só lugar — saldo, fluxo, patrimônio e metas.
-        </p>
-      </div>
-      <Button>Em breve</Button>
-      <p className="tabular text-muted-foreground text-xs">v0.0.1 · M0 foundation</p>
-    </main>
+    <>
+      {/* Skip to main content — accessibility */}
+      <a
+        href="#main-content"
+        className="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:outline-none"
+      >
+        Ir para o conteúdo principal
+      </a>
+
+      <Nav />
+
+      <main id="main-content" className="flex flex-col">
+        <Hero />
+        <Features />
+        <BetaCallout />
+        <FAQ />
+      </main>
+
+      <Footer />
+    </>
   );
 }
