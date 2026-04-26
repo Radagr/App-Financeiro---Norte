@@ -90,3 +90,57 @@ export function filterTransactionsByPeriod(
     return t >= startTime && t <= endTime;
   });
 }
+
+export type CategoryMonthlyEntry = {
+  month: string; // YYYY-MM
+  byCategory: Record<string, number>; // category -> abs spending
+  total: number;
+};
+
+const EXCLUDED_CATEGORIES = new Set(["transferencias", "investimentos"]);
+
+/**
+ * Aggregates spending (outflows only) by month and category.
+ * Excludes transferencias and investimentos (intra-account flows).
+ * Sorted by month ascending.
+ */
+export function computeSpendByCategoryMonth(transactions: Transaction[]): CategoryMonthlyEntry[] {
+  const map = new Map<string, Record<string, number>>();
+
+  for (const tx of transactions) {
+    if (tx.amount >= 0) continue;
+    if (EXCLUDED_CATEGORIES.has(tx.category)) continue;
+    const month = tx.date.slice(0, 7);
+    const entry = map.get(month) ?? {};
+    entry[tx.category] = (entry[tx.category] ?? 0) + Math.abs(tx.amount);
+    map.set(month, entry);
+  }
+
+  return Array.from(map.entries())
+    .map(([month, byCategory]) => ({
+      month,
+      byCategory,
+      total: Object.values(byCategory).reduce((a, b) => a + b, 0),
+    }))
+    .sort((a, b) => a.month.localeCompare(b.month));
+}
+
+/**
+ * Returns the top N categories by total absolute spending (over all transactions),
+ * with the rest collapsed into "outros".
+ * Useful for stacked chart legends where you want to limit cardinality.
+ */
+export function topCategoriesWithOthers(transactions: Transaction[], n: number): string[] {
+  const totals = new Map<string, number>();
+  for (const tx of transactions) {
+    if (tx.amount >= 0) continue;
+    if (EXCLUDED_CATEGORIES.has(tx.category)) continue;
+    totals.set(tx.category, (totals.get(tx.category) ?? 0) + Math.abs(tx.amount));
+  }
+  const sorted = Array.from(totals.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([cat]) => cat);
+  const top = sorted.slice(0, n);
+  if (sorted.length > n) top.push("outros");
+  return Array.from(new Set(top)); // ensure "outros" not duplicated if it was already in top
+}
