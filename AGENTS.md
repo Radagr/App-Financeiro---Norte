@@ -99,3 +99,29 @@ Comunicação em português. Identificadores de código, mensagens de commit e n
 ### Subscription helper
 
 - `getEffectiveTier(state, now?)` em `@/lib/subscription` — pure function. Considera trial e subscription status. Sempre use isso, nunca leia `subscriptionTier` direto. **Por enquanto retorna 'free' pra todo mundo.**
+
+## M3 — Dashboard 360° (mock data)
+
+> 5 módulos visuais com fixtures BRL realistas. M5 (Pluggy) substituirá `src/lib/mock/data.ts` por queries reais — componentes não mudam.
+
+### Arquitetura
+
+- `src/lib/mock/data.ts` é a única fonte de verdade enquanto Pluggy não chega. Tipos exportados (`Account`, `Transaction`, `InvestmentPosition`, `Goal`) são contratos estáveis.
+- `src/lib/mock/computations.ts` contém os agregadores puros (`computeSaldoConsolidado`, `computeFluxoCaixa`, `computeAlocacao`, `filterTransactionsByPeriod`). 100% testáveis, 0 dependências de DB.
+- `src/lib/mock/periods.ts` — `Period` type + `parsePeriod` (URL → Period com fallback "1m") + `periodToDateRange`.
+- Componentes em `src/components/dashboard/*` são puramente de apresentação. Recebem dados via props.
+
+### Padrões dashboard
+
+- Sempre usar `<ModuleCard>` como wrapper para consistência visual
+- Currency: `Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" })`. Tabelas: `font-mono tabular`. Hero numbers: `font-mono tabular text-norte-primary text-4xl`.
+- Charts: Recharts. Cores via tokens `var(--color-chart-N)` ou `var(--color-norte-positive/negative)`. Nunca hex hardcoded.
+- Skeletons via `loading.tsx` (Suspense fallback) — `src/app/(app)/app/loading.tsx`.
+- Period toggle atualiza URL `?period=...`; server component re-renderiza com novos dados.
+
+### Quando Pluggy chegar (M5)
+
+- Substituir `src/lib/mock/data.ts` por queries Prisma contra tabelas reais. Manter os mesmos shapes exportados.
+- `computations.ts` continua igual (puras).
+- Componentes dashboard continuam igual (props-driven).
+- Loading skeleton continua igual.
