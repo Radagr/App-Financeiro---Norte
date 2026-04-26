@@ -11,6 +11,7 @@
 **PRD references:** §5.1 P0 (Stripe + landing institucional), §6.9 RF-9.1 a RF-9.7 (Pagamentos), §9 (design language).
 
 **Memory references:**
+
 - `project_norte_branding_strategy.md` — M2 é quando trocamos Inter por Instrument Sans/Serif e adicionamos atmosfera + simbolismo "norte"
 - `feedback_skills_usage.md` — frontend-design + superpowers em conjunto pra trabalho visual
 - `project_norte_pooler_workaround.md` — fix de pooler URL precisa rolar antes de deploy de produção (não bloqueia M2 dev local, mas é P0 antes de live)
@@ -31,11 +32,13 @@
 Dashboard Stripe → **Products** → **+ Add product**
 
 **Produto 1: "Norte Plus"**
+
 - Name: `Norte Plus`
 - Pricing → Recurring → Monthly → Amount: `R$ 24,90` BRL → **Add product**
 - Copia o **price ID** (formato `price_xxxx`) — vai pra `NEXT_PUBLIC_STRIPE_PRICE_PLUS`
 
 **Produto 2: "Norte Pro"**
+
 - Name: `Norte Pro`
 - Pricing → Recurring → Monthly → Amount: `R$ 49,90` BRL → **Add product**
 - Copia o **price ID** — vai pra `NEXT_PUBLIC_STRIPE_PRICE_PRO`
@@ -45,6 +48,7 @@ Dashboard Stripe → **Products** → **+ Add product**
 ### 0.3 Coletar API keys
 
 Dashboard → Developers → API keys (em modo Test):
+
 - **Publishable key** (`pk_test_...`) → `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - **Secret key** (`sk_test_...`) — clica "Reveal" → `STRIPE_SECRET_KEY`
 
@@ -55,6 +59,7 @@ Pra testar webhooks em dev, instalar Stripe CLI:
 **Windows:** `scoop install stripe` ou baixar de https://stripe.com/docs/stripe-cli
 
 Após instalar:
+
 ```bash
 stripe login    # opens browser, authorizes CLI
 stripe listen --forward-to localhost:3000/api/stripe/webhook
@@ -134,6 +139,7 @@ app-norte/
 ## Task 1: Subscription DB schema (SQL + Prisma)
 
 **Files:**
+
 - Create: `supabase/migrations/20260425210000_add_subscription_to_users.sql`
 - Modify: `prisma/schema.prisma`
 
@@ -208,6 +214,7 @@ model User {
 - [ ] **Step 1.4: Validate Prisma generate + DB connection**
 
 Run from project root:
+
 ```bash
 npx prisma generate
 npm run db:check
@@ -301,6 +308,7 @@ git commit -m "feat(env): require Stripe env vars for M2"
 - [ ] **Step 3.1: Install runtime + types**
 
 Run:
+
 ```bash
 npm install stripe @stripe/stripe-js
 ```
@@ -323,6 +331,7 @@ git commit -m "feat(deps): install Stripe Node SDK + browser loader"
 ## Task 4: Stripe SDK client + subscription helper (TDD)
 
 **Files:**
+
 - Create: `src/lib/stripe.ts`
 - Create: `src/lib/subscription.ts`
 - Create: `tests/unit/subscription.test.ts`
@@ -517,6 +526,7 @@ git commit -m "feat(billing): Stripe client + getEffectiveTier helper (TDD)"
 ## Task 5: Start trial action + tRPC billing router
 
 **Files:**
+
 - Create: `src/server/trpc/routers/billing.ts`
 - Modify: `src/server/trpc/routers/_app.ts`
 
@@ -609,6 +619,7 @@ git commit -m "feat(billing): tRPC startTrial mutation"
 ## Task 6: Stripe Checkout session route
 
 **Files:**
+
 - Create: `src/app/api/stripe/checkout/route.ts`
 - Modify: `src/server/trpc/routers/billing.ts` (add createCheckoutSession mutation)
 
@@ -758,6 +769,7 @@ git commit -m "feat(billing): tRPC mutations for Stripe checkout + portal"
 ## Task 7: Stripe webhook handler (TDD)
 
 **Files:**
+
 - Create: `src/app/api/stripe/webhook/route.ts`
 - Create: `tests/unit/stripe-webhook.test.ts`
 
@@ -948,7 +960,11 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ received: true });
   } catch (err) {
-    console.error("[stripe-webhook] handler error", { eventId: event.id, eventType: event.type, err });
+    console.error("[stripe-webhook] handler error", {
+      eventId: event.id,
+      eventType: event.type,
+      err,
+    });
     return NextResponse.json({ error: "handler failed" }, { status: 500 });
   }
 }
@@ -1067,19 +1083,23 @@ git commit -m "feat(billing): Stripe webhook handler with signature verification
 - [ ] **Step 8.1: Make sure `stripe listen` is running**
 
 In a separate terminal, with `.env.local` filled:
+
 ```bash
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 ```
+
 Note the `whsec_*` it prints — must match `STRIPE_WEBHOOK_SECRET` in `.env.local`. If not, update `.env.local` and restart `npm run dev`.
 
 - [ ] **Step 8.2: Trigger a test event**
 
 In another terminal:
+
 ```bash
 stripe trigger checkout.session.completed
 ```
 
 Check:
+
 - `stripe listen` terminal shows `→ POST /api/stripe/webhook [200 OK]`
 - App dev server log shows webhook fired
 
@@ -1092,6 +1112,7 @@ Check:
 ## Task 9: Switch fonts to Instrument Sans + Instrument Serif
 
 **Files:**
+
 - Modify: `src/app/layout.tsx`
 - Modify: `src/app/globals.css`
 
@@ -1138,22 +1159,20 @@ export const metadata: Metadata = {
     "Dashboard financeiro 360° com Open Finance, IA de categorização e metas inteligentes.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={cn(
-        "h-full antialiased",
-        sans.variable,
-        serif.variable,
-        mono.variable,
-      )}
+      className={cn("h-full antialiased", sans.variable, serif.variable, mono.variable)}
     >
-      <body className="min-h-full flex flex-col">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <body className="flex min-h-full flex-col">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <TRPCProvider>{children}</TRPCProvider>
         </ThemeProvider>
       </body>
@@ -1167,16 +1186,16 @@ export default function RootLayout({
 Read `src/app/globals.css`, find the `@theme inline` block, and update the font tokens. Replace:
 
 ```css
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+--font-sans: var(--font-inter), system-ui, sans-serif;
+--font-mono: var(--font-jetbrains), ui-monospace, monospace;
 ```
 
 With:
 
 ```css
-  --font-sans: var(--font-sans-stack), system-ui, sans-serif;
-  --font-serif: var(--font-serif-stack), Georgia, serif;
-  --font-mono: var(--font-mono-stack), ui-monospace, monospace;
+--font-sans: var(--font-sans-stack), system-ui, sans-serif;
+--font-serif: var(--font-serif-stack), Georgia, serif;
+--font-mono: var(--font-mono-stack), ui-monospace, monospace;
 ```
 
 > Tailwind picks up `--font-serif` automatically and exposes `font-serif` utility.
@@ -1204,12 +1223,14 @@ git commit -m "feat(brand): swap to Instrument Sans + Serif fonts (M2 visual ide
 ## Task 10: Brand primitives — CompassMark + Atmosphere
 
 **Files:**
+
 - Create: `src/components/brand/compass-mark.tsx`
 - Create: `src/components/brand/atmosphere.tsx`
 
 > ⚠️ **EXECUTING SUBAGENT MUST INVOKE `frontend-design` SKILL** — these are reusable visual primitives that codify the Norte aesthetic. Quality of these components compounds across every page.
 
 **CompassMark constraints:**
+
 - SVG, scalable
 - Stylized N or rosa-dos-ventos motif
 - Uses `currentColor` (so parents control via text color tokens)
@@ -1217,6 +1238,7 @@ git commit -m "feat(brand): swap to Instrument Sans + Serif fonts (M2 visual ide
 - No external assets
 
 **Atmosphere constraints:**
+
 - Composable component for backgrounds
 - Three layers (each toggleable via prop): noise overlay (~3% opacity), radial gradient, horizon line
 - Uses CSS only, no JS animation
@@ -1235,9 +1257,9 @@ export function CompassMark(props: CompassMarkProps): JSX.Element;
 
 // atmosphere.tsx
 type AtmosphereProps = {
-  noise?: boolean;          // default true
-  gradient?: "top" | "center" | "bottom-right" | "none";  // default "top"
-  horizon?: boolean;         // default true
+  noise?: boolean; // default true
+  gradient?: "top" | "center" | "bottom-right" | "none"; // default "top"
+  horizon?: boolean; // default true
 };
 export function Atmosphere(props: AtmosphereProps): JSX.Element;
 ```
@@ -1245,6 +1267,7 @@ export function Atmosphere(props: AtmosphereProps): JSX.Element;
 - [ ] **Step 10.1: Implement CompassMark**
 
 Subagent designs and implements `src/components/brand/compass-mark.tsx`. Component must:
+
 - Be a default export-style React functional component
 - Render valid SVG
 - Use `currentColor` for fills/strokes
@@ -1254,6 +1277,7 @@ Subagent designs and implements `src/components/brand/compass-mark.tsx`. Compone
 - [ ] **Step 10.2: Implement Atmosphere**
 
 Subagent designs and implements `src/components/brand/atmosphere.tsx`. Component must:
+
 - Match the API sketch above (3 props with defaults)
 - Use Tailwind utilities + Norte tokens
 - Pointer-events: none + absolute inset-0 -z-10 (so consumers wrap in `relative` parent)
@@ -1284,6 +1308,7 @@ git commit -m "feat(brand): add CompassMark + Atmosphere primitive components"
 ## Task 11: Landing page — public root `/`
 
 **Files:**
+
 - Modify: `src/app/page.tsx` (replaces M0 placeholder entirely)
 - Create: `src/components/landing/hero.tsx`
 - Create: `src/components/landing/features.tsx`
@@ -1294,6 +1319,7 @@ git commit -m "feat(brand): add CompassMark + Atmosphere primitive components"
 > ⚠️ **EXECUTING SUBAGENT MUST INVOKE `frontend-design` SKILL** — this is THE highest-stakes visual artifact of M2. First impression of Norte for cold visitors. Apply skill rigorously.
 
 > Constraints:
+>
 > - Use `Atmosphere` (Task 10) for subtle bg layers
 > - Use `CompassMark` (Task 10) in nav + footer
 > - Use Instrument Serif for hero H1 + section headings
@@ -1356,6 +1382,7 @@ git commit -m "feat(landing): public landing page with hero, features, pricing t
 ## Task 12: /pricing page
 
 **Files:**
+
 - Create: `src/app/pricing/page.tsx`
 - Create: `src/components/pricing/pricing-card.tsx`
 
@@ -1372,6 +1399,7 @@ git commit -m "feat(landing): public landing page with hero, features, pricing t
 5. **Footer** — reuse from Task 11
 
 **PricingCard logic:**
+
 - Server-component-friendly props
 - "Plus" pode ter prop `recommended` que aplica destaque visual (ring norte-secondary)
 - CTA do Free: link pra `/login?next=/onboarding` (ou similar — usuário cria conta gratuitamente)
@@ -1388,14 +1416,16 @@ async function startCheckout(formData: FormData) {
   "use server";
   const tier = formData.get("tier") as "plus" | "pro";
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=/pricing`);
 
   // Reuse the billing router logic by calling the same flow
   // ... (subagent inlines the customer creation + checkout creation here, OR
   //      extracts the createCheckoutSession into a shared server function
   //      and calls from both tRPC mutation + this server action)
-  
+
   redirect(checkoutUrl);
 }
 ```
@@ -1426,12 +1456,14 @@ git commit -m "feat(pricing): /pricing page with 3-tier cards and Stripe checkou
 ## Task 13: Billing page (auth'd)
 
 **Files:**
+
 - Create: `src/app/(app)/billing/page.tsx`
 - Create: `src/app/(app)/billing/manage-button.tsx` (client component)
 
 > ⚠️ **EXECUTING SUBAGENT MUST INVOKE `frontend-design` SKILL** for visual choices, though the constraints here are gentler — it's an internal admin page.
 
 **Logic:**
+
 - Server component reads `dbUser` via Prisma + `getEffectiveTier()`
 - Shows current tier (badge: Free / Plus / Pro)
 - If trial active: countdown ("Trial Plus termina em X dias")
@@ -1558,6 +1590,7 @@ git commit -m "feat(billing): show effective tier badge on /app"
 ## Task 15: Update docs
 
 **Files:**
+
 - Modify: `AGENTS.md`
 - Modify: `README.md`
 
@@ -1566,26 +1599,29 @@ git commit -m "feat(billing): show effective tier badge on /app"
 Append at end of `AGENTS.md`:
 
 ```markdown
-
 ## M2 — Billing conventions
 
 ### Stripe
-- Test mode em dev (keys sk_test_*, pk_test_*). Produção troca pra sk_live_*.
+
+- Test mode em dev (keys sk*test*_, pk*test*_). Produção troca pra sk*live*\*.
 - `stripe listen --forward-to localhost:3000/api/stripe/webhook` precisa estar rodando em terminal separado durante dev.
 - Eventos webhook tratados: `checkout.session.completed`, `customer.subscription.{updated,deleted}`, `invoice.payment_failed`. Outros são ack'd 200 sem ação (idempotência).
 - Webhook signature verificada via `STRIPE_WEBHOOK_SECRET`. Cada env tem o seu (CLI dev != produção).
 
 ### Subscription model
+
 - Tier em `User.subscriptionTier`: `free | plus | pro`.
 - Trial é só DB-side (`trialEndsAt`), não envolve Stripe. Conversão real cria Stripe Customer + Subscription.
 - `getEffectiveTier(state, now)` (em `@/lib/subscription`) é a fonte da verdade pra UI. Nunca leia `subscriptionTier` direto pra UI — sempre passe pelo helper.
 
 ### Pricing
+
 - Plus R$ 24,90/mês, Pro R$ 49,90/mês, BRL.
 - Trial: 14 dias do Plus, sem cartão. Após trial expirar sem upgrade → tier volta pra free automaticamente (computed pelo helper).
 - Failed payment: status `past_due` por 7 dias (M2 só marca status; email vem em M8).
 
 ### Routes
+
 - Public: `/`, `/pricing`, `/login`
 - Auth: `/onboarding`, `/app`, `/billing`
 - API: `/api/stripe/{webhook,checkout}`, `/api/auth/{logout}`, `/api/trpc/[trpc]`
@@ -1594,6 +1630,7 @@ Append at end of `AGENTS.md`:
 - [ ] **Step 15.2: Update README.md docs section**
 
 Add line in README.md "Documentação" section:
+
 ```markdown
 - `docs/superpowers/plans/2026-04-25-m2-landing-stripe.md` — M2 plan (Landing + Stripe)
 ```
@@ -1641,6 +1678,7 @@ git commit -m "docs: M2 conventions for billing + Stripe"
 ## Self-Review
 
 **1. Spec coverage (PRD §6.9 RF-9.1 a RF-9.7):**
+
 - ✅ RF-9.1 Stripe Checkout pra Plus e Pro → Tasks 6, 12
 - ✅ RF-9.2 Trial 14 dias do Plus sem cartão → Tasks 5, 14 (DB-side, sem Stripe envolvido)
 - ✅ RF-9.3 Upgrade/downgrade self-service → Task 13 (via Stripe Customer Portal)
@@ -1658,6 +1696,7 @@ git commit -m "docs: M2 conventions for billing + Stripe"
 **3. Type consistency:** `SubscriptionState`, `Tier`, `getEffectiveTier`, `stripe`, `prisma`, `billingRouter`, `appRouter`, `Atmosphere`, `CompassMark` consistentes através das tasks.
 
 **4. Critical path:**
+
 - Tasks 1, 2, 3, 4, 5 não dependem de Step 0 (são código + tests + DB schema)
 - Task 6 (createCheckoutSession) testa via build — precisa Step 0 pra `npm run build` passar
 - Task 7 (webhook) — pode passar test sem Step 0 (mocks Stripe), mas integration test (Task 8) precisa Step 0 + `stripe listen`
@@ -1669,6 +1708,7 @@ Recomendação de execução: 1 → 2 → 3 → 4 → 5 → (Step 0 done) → 6 
 **5. Frontend-design flag:** Tasks 9, 10, 11, 12, 13 todas marcadas. Visual identity é central a M2.
 
 **6. Riscos conhecidos:**
+
 - **Pooler workaround** (memory) ainda em pé — não bloqueia M2 dev local mas precisa fix antes de deploy real
 - **Stripe API version pin** pode ficar desatualizado; verificar no início da execução qual version o SDK 18+ pega
 - **Trial sem cartão** simplificado (só DB-side) — pode causar confusão se usuário esperar email "trial ending"; mitigado em M8

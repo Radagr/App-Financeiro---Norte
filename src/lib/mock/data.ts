@@ -31,6 +31,7 @@ export type Category =
   | "receita_fixa"
   | "receita_variavel"
   | "impostos"
+  | "dizimo"
   | "outros";
 
 export type AssetClass = "rf" | "rv" | "fii" | "cripto" | "cash";

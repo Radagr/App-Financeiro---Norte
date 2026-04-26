@@ -47,3 +47,11 @@ next-env.d.ts
 /frontend-design/
 /superpowers/
 
+# Extratos bancários reais — contêm CPF, conta, PIX (PII). NUNCA comitar.
+/extratos/
+/src/lib/data/imported.ts
+
+# Build/test logs
+/build.log
+*.log
+
