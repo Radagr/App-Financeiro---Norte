@@ -35,4 +35,5 @@ npm run dev
 - `../docs/PRD.md` — Product Requirements
 - `../docs/superpowers/plans/` — planos de implementação por milestone
 - `../docs/superpowers/plans/2026-04-25-m1-auth-multi-tenant.md` — M1 plan (Auth & Multi-tenant)
+- `../docs/superpowers/plans/2026-04-25-m2-landing-stripe.md` — M2 plan (Landing + Visual Identity; V1 = free, Stripe deferred)
 - `AGENTS.md` — convenções para agentes/colaboradores

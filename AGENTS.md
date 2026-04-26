@@ -72,3 +72,30 @@ Comunicação em português. Identificadores de código, mensagens de commit e n
 
 - DATABASE_URL atualmente aponta pra direct connection (porta 5432, host `db.<ref>.supabase.co`) porque o pooler URL rejeitou tenant. Não escala em Vercel (Free tier limita ~60 conn).
 - Fix: investigar URL correto do pooler na dashboard atualizada e re-testar antes de deploy de M2.
+
+## M2 — Landing + Visual Identity (V1 = grátis)
+
+> Stripe billing was deferred. V1 ships 100% free. Subscription columns exist in `users` table but are dormant. See memory `project_norte_v1_scope.md`.
+
+### Identidade visual
+
+- **Sans:** Instrument Sans (`font-sans`, default body)
+- **Serif:** Instrument Serif (`font-serif`, headings + display) — only weight 400 ships, use size/spacing for hierarchy not weight
+- **Mono:** JetBrains Mono (`font-mono`, sempre com `tabular` para números financeiros)
+- CSS vars renamed: `--font-sans-stack`, `--font-serif-stack`, `--font-mono-stack` em `layout.tsx`; expostas como `--font-sans`, `--font-serif`, `--font-mono` em `globals.css`
+
+### Brand primitives
+
+- `<CompassMark size? className? />` — em `@/components/brand/compass-mark`. SVG decorative, `currentColor`, `aria-hidden="true"` por default. Use em nav, footer, brand contexts.
+- `<Atmosphere noise? gradient? horizon? />` — em `@/components/brand/atmosphere`. Background system: noise (3% opacity, fractalNoise SVG), radial gradient (4 positions), horizon line (1px). Pointer-events-none, -z-10. Wrap em `relative` parent.
+
+### Landing
+
+- `/` route: composição assimétrica, hero com compass diagram à direita, features 1+3 layout
+- Componentes em `@/components/landing/`: `nav`, `hero`, `features`, `beta-callout`, `faq`, `footer`
+- Beta callout substitui pricing teaser; mensagem é "free durante beta"
+- CTAs sempre "Criar conta grátis" ou "Entrar"; **nunca** "Assinar"
+
+### Subscription helper
+
+- `getEffectiveTier(state, now?)` em `@/lib/subscription` — pure function. Considera trial e subscription status. Sempre use isso, nunca leia `subscriptionTier` direto. **Por enquanto retorna 'free' pra todo mundo.**
