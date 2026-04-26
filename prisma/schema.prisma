@@ -35,3 +35,37 @@ model User {
 
   @@map("users")
 }
+
+model Goal {
+  id              String              @id @default(uuid()) @db.Uuid
+  userId          String              @map("user_id") @db.Uuid
+  name            String
+  type            String              @default("custom")
+  target          Decimal             @db.Decimal(14, 2)
+  current         Decimal             @default(0) @db.Decimal(14, 2)
+  deadline        DateTime            @db.Date
+  priority        Int                 @default(1) @db.SmallInt
+  linkedAccountId String?             @map("linked_account_id")
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+
+  contributions   GoalContribution[]
+
+  @@index([userId], map: "goals_user_id_idx")
+  @@index([userId, deadline], map: "goals_user_deadline_idx")
+  @@map("goals")
+}
+
+model GoalContribution {
+  id             String   @id @default(uuid()) @db.Uuid
+  goalId         String   @map("goal_id") @db.Uuid
+  amount         Decimal  @db.Decimal(14, 2)
+  contributedAt  DateTime @default(now()) @map("contributed_at")
+  note           String?
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  goal           Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@index([goalId], map: "goal_contributions_goal_id_idx")
+  @@map("goal_contributions")
+}
