@@ -26,5 +26,12 @@ model User {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
+  subscriptionTier      String    @default("free") @map("subscription_tier")
+  trialEndsAt           DateTime? @map("trial_ends_at")
+  stripeCustomerId      String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId  String?   @unique @map("stripe_subscription_id")
+  subscriptionStatus    String?   @map("subscription_status")
+  subscriptionEndsAt    DateTime? @map("subscription_ends_at")
+
   @@map("users")
 }
