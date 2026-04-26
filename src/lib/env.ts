@@ -9,6 +9,12 @@ const schema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+
+  STRIPE_SECRET_KEY: z.string().min(1).startsWith("sk_"),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1).startsWith("whsec_"),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1).startsWith("pk_"),
+  NEXT_PUBLIC_STRIPE_PRICE_PLUS: z.string().startsWith("price_"),
+  NEXT_PUBLIC_STRIPE_PRICE_PRO: z.string().startsWith("price_"),
 });
 
 const parsed = schema.safeParse(process.env);
