@@ -17,7 +17,7 @@
 // Output: src/lib/data/imported.ts (gitignored)
 
 import { readdirSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -53,7 +53,8 @@ function parseOfx(content) {
     const dtPosted = matchTag(block, "DTPOSTED");
     const trnAmt = matchTag(block, "TRNAMT");
     const fitId = matchTag(block, "FITID");
-    const memo = matchTag(block, "MEMO") || matchTag(block, "NAME") || matchTag(block, "CHECKNUM") || "";
+    const memo =
+      matchTag(block, "MEMO") || matchTag(block, "NAME") || matchTag(block, "CHECKNUM") || "";
 
     if (!dtPosted || !trnAmt) continue;
 
@@ -146,7 +147,11 @@ function categorize(memo, amount, accountKind) {
   if (USER_NAME_REGEX.test(m)) return "transferencias";
 
   // 2. Card payments / intra-account transfers
-  if (/pagamento.*fatura|pgto.*cart[ãa]o|fatura.*nubank|fatura.*btg|fatura cart[ãa]o|pagamento recebido/i.test(m)) {
+  if (
+    /pagamento.*fatura|pgto.*cart[ãa]o|fatura.*nubank|fatura.*btg|fatura cart[ãa]o|pagamento recebido/i.test(
+      m,
+    )
+  ) {
     return "transferencias";
   }
 
@@ -155,7 +160,8 @@ function categorize(memo, amount, accountKind) {
     if (/sal[áa]rio|payroll/i.test(m)) return "receita_fixa";
     if (/empr[ée]stimo/i.test(m)) return "outros";
     if (/cancelamento|estorno|reembolso|refund/i.test(m)) return "outros";
-    if (/pix recebid|transfer[êe]ncia recebid|cr[ée]dito|entrada pix/i.test(m)) return "receita_variavel";
+    if (/pix recebid|transfer[êe]ncia recebid|cr[ée]dito|entrada pix/i.test(m))
+      return "receita_variavel";
     return "receita_variavel";
   }
 
@@ -168,47 +174,91 @@ function categorize(memo, amount, accountKind) {
   // === Outflow categorization (negative amounts) ===
 
   // Transporte
-  if (/uber|\b99\b|^99$|99 *Tecnologia|cabify|metr[ôo]|\bonibus\b|combust[íi]vel|\bposto\b|posto principe|ipiranga|shell|petrobras|estacion|pedagio|pedágio|gasolina|alcool|\bcar |carwash|estapar|onibus|braz[íi]lia veicul/i.test(m))
+  if (
+    /uber|\b99\b|^99$|99 *Tecnologia|cabify|metr[ôo]|\bonibus\b|combust[íi]vel|\bposto\b|posto principe|ipiranga|shell|petrobras|estacion|pedagio|pedágio|gasolina|alcool|\bcar |carwash|estapar|onibus|braz[íi]lia veicul/i.test(
+      m,
+    )
+  )
     return "transporte";
 
   // Alimentação — delivery + restaurantes
-  if (/ifood|ifd\*|rappi|james|delivery|restaurante|lanchonete|hambur|pizza|sushi|burger|mcdonald|subway|starbucks|coffee|caf[ée]|padaria|botequim|cantina|restaur|outback|bk |pizzaria|hot dog|hotdog|kebab|brasileirinho|sucos|açaí|acai/i.test(m))
+  if (
+    /ifood|ifd\*|rappi|james|delivery|restaurante|lanchonete|hambur|pizza|sushi|burger|mcdonald|subway|starbucks|coffee|caf[ée]|padaria|botequim|cantina|restaur|outback|bk |pizzaria|hot dog|hotdog|kebab|brasileirinho|sucos|açaí|acai/i.test(
+      m,
+    )
+  )
     return "alimentacao";
 
   // Alimentação — supermercados / atacarejos
-  if (/mercado|carrefour|p[ãa]o de a[çc][úu]car|extra |hortifruti|atacad[ãa]o|atacarejo|sams club|sams ?club|\bdia\b|sendas|hiperme|supermerc|empório|emporio|verdurao|frutaria|fort atacad|tenda atac|assa[ií] atac|hortimar|açougue|acougue/i.test(m))
+  if (
+    /mercado|carrefour|p[ãa]o de a[çc][úu]car|extra |hortifruti|atacad[ãa]o|atacarejo|sams club|sams ?club|\bdia\b|sendas|hiperme|supermerc|empório|emporio|verdurao|frutaria|fort atacad|tenda atac|assa[ií] atac|hortimar|açougue|acougue/i.test(
+      m,
+    )
+  )
     return "alimentacao";
 
   // Moradia
-  if (/aluguel|condom[íi]nio|condominio|imobili[áa]ria|aluguer|\bloft\b|housi |housing|quinto andar|kitnet|república|republica/i.test(m))
+  if (
+    /aluguel|condom[íi]nio|condominio|imobili[áa]ria|aluguer|\bloft\b|housi |housing|quinto andar|kitnet|república|republica/i.test(
+      m,
+    )
+  )
     return "moradia";
 
   // Moradia — utilities
-  if (/\bluz\b|enel|cpfl|cemig|copel|coelba|el[ée]trica|energia |\bgas\b|\bgás\b|comgas|sabesp|cedae|copasa|\bágua\b|aguas |saneamento/i.test(m))
+  if (
+    /\bluz\b|enel|cpfl|cemig|copel|coelba|el[ée]trica|energia |\bgas\b|\bgás\b|comgas|sabesp|cedae|copasa|\bágua\b|aguas |saneamento/i.test(
+      m,
+    )
+  )
     return "moradia";
 
   // Serviços — telecom + streaming + saas
-  if (/spotify|netflix|disney|prime video|prime video|hbo|paramount|globoplay|youtube premium|apple\.com|apple\.com|icloud|google one|chatgpt|openai|notion|figma|github|cursor|adobe|canva|deezer|pluto|zoom|dropbox|mega\.|onedrive|grammarly/i.test(m))
+  if (
+    /spotify|netflix|disney|prime video|prime video|hbo|paramount|globoplay|youtube premium|apple\.com|apple\.com|icloud|google one|chatgpt|openai|notion|figma|github|cursor|adobe|canva|deezer|pluto|zoom|dropbox|mega\.|onedrive|grammarly/i.test(
+      m,
+    )
+  )
     return "servicos";
 
   // Serviços — telecom (mobile + internet)
-  if (/\btim\*|\btim |\bvivo |\bclaro |\boi \b|claro net|vivo fibra|oi fibra|tim fibra|tim live|nextel|algar|virtua|sky |hubsoft|telef[oô]nica/i.test(m))
+  if (
+    /\btim\*|\btim |\bvivo |\bclaro |\boi \b|claro net|vivo fibra|oi fibra|tim fibra|tim live|nextel|algar|virtua|sky |hubsoft|telef[oô]nica/i.test(
+      m,
+    )
+  )
     return "servicos";
 
   // Saúde
-  if (/farm[áa]cia|drogaria|drogasil|pacheco|raia |\braia\b|laborat[óo]rio|hospital|cl[íi]nica|m[ée]dico|psicologo|psicólogo|fisioterap|amil |unimed|sulam[ée]rica|hapvida|dermato|dental|odontolog|growth ?supplement|growthsupplement|suplemento|protein/i.test(m))
+  if (
+    /farm[áa]cia|drogaria|drogasil|pacheco|raia |\braia\b|laborat[óo]rio|hospital|cl[íi]nica|m[ée]dico|psicologo|psicólogo|fisioterap|amil |unimed|sulam[ée]rica|hapvida|dermato|dental|odontolog|growth ?supplement|growthsupplement|suplemento|protein/i.test(
+      m,
+    )
+  )
     return "saude";
 
   // Educação
-  if (/escola|col[ée]gio|universidade|udemy|coursera|alura|hotmart|kindle |livraria|\bbook |\bbooks |kwikfix|geekie|edutech|enem|cursinho|pre-vestibular|preparat[óo]rio|edicao|editora|editora globo/i.test(m))
+  if (
+    /escola|col[ée]gio|universidade|udemy|coursera|alura|hotmart|kindle |livraria|\bbook |\bbooks |kwikfix|geekie|edutech|enem|cursinho|pre-vestibular|preparat[óo]rio|edicao|editora|editora globo/i.test(
+      m,
+    )
+  )
     return "educacao";
 
   // Lazer — entertainment / shopping
-  if (/cinema|ingresso|sympla|show |teatro|\bbar\b|\bpub\b|balada|magazine|magalu|americanas|shopee|aliexpress|mercadoliv|mercado liv|netshoes|centauro|nike|adidas|under armour|reserva|riachuelo|c&a|c & a|renner|hering|zara|fast shop|kabum|amazon\.com|amazon mark|amazon$|\bsteam\b|epic games|playstation|xbox|nintendo|spotify premium/i.test(m))
+  if (
+    /cinema|ingresso|sympla|show |teatro|\bbar\b|\bpub\b|balada|magazine|magalu|americanas|shopee|aliexpress|mercadoliv|mercado liv|netshoes|centauro|nike|adidas|under armour|reserva|riachuelo|c&a|c & a|renner|hering|zara|fast shop|kabum|amazon\.com|amazon mark|amazon$|\bsteam\b|epic games|playstation|xbox|nintendo|spotify premium/i.test(
+      m,
+    )
+  )
     return "lazer";
 
   // Lazer — viagens / passagens
-  if (/airlines|latam|\bgol\b|azul \w?vi|\btam\b|airbnb|booking|hotel |hotels\.com|decolar|123milhas|hostel|pousada|cvc viag|airbnb|expedia|trivago/i.test(m))
+  if (
+    /airlines|latam|\bgol\b|azul \w?vi|\btam\b|airbnb|booking|hotel |hotels\.com|decolar|123milhas|hostel|pousada|cvc viag|airbnb|expedia|trivago/i.test(
+      m,
+    )
+  )
     return "lazer";
 
   // Lazer — pets
@@ -218,13 +268,19 @@ function categorize(memo, amount, accountKind) {
   // Investimentos (apenas saídas de conta corrente para corretora)
   if (
     amount < 0 &&
-    /tesouro|aporte|aplica[çc][ãa]o|aplicar|investiment|nubank invest|btg invest|rico invest|xp invest|inter invest|c6 invest/i.test(m) &&
+    /tesouro|aporte|aplica[çc][ãa]o|aplicar|investiment|nubank invest|btg invest|rico invest|xp invest|inter invest|c6 invest/i.test(
+      m,
+    ) &&
     (accountKind === "checking" || accountKind === "savings")
   )
     return "investimentos";
 
   // Impostos
-  if (/imposto|iptu|ipva|darf|guia rj|\binss\b|previd[êe]ncia|simples nacional|\bicms\b|\bdas \b/i.test(m))
+  if (
+    /imposto|iptu|ipva|darf|guia rj|\binss\b|previd[êe]ncia|simples nacional|\bicms\b|\bdas \b/i.test(
+      m,
+    )
+  )
     return "impostos";
 
   // Catch-all: PIX/transfer to third party = gasto, mas marca como "outros" pra revisão posterior
@@ -235,10 +291,38 @@ function categorize(memo, amount, accountKind) {
 // === ACCOUNTS ===
 
 const ACCOUNTS = [
-  { id: "acc_nubank_conta", name: "Nubank Conta", bank: "Nubank", kind: "checking", color: "chart-2", balance: 0 },
-  { id: "acc_nubank_cartao", name: "Nubank Cartão", bank: "Nubank", kind: "credit", color: "chart-2", balance: 0 },
-  { id: "acc_btg_cartao", name: "BTG Cartão (•••2427)", bank: "BTG", kind: "credit", color: "chart-1", balance: 0 },
-  { id: "acc_c6_conta", name: "C6 Conta", bank: "C6", kind: "checking", color: "chart-4", balance: 0 },
+  {
+    id: "acc_nubank_conta",
+    name: "Nubank Conta",
+    bank: "Nubank",
+    kind: "checking",
+    color: "chart-2",
+    balance: 0,
+  },
+  {
+    id: "acc_nubank_cartao",
+    name: "Nubank Cartão",
+    bank: "Nubank",
+    kind: "credit",
+    color: "chart-2",
+    balance: 0,
+  },
+  {
+    id: "acc_btg_cartao",
+    name: "BTG Cartão (•••2427)",
+    bank: "BTG",
+    kind: "credit",
+    color: "chart-1",
+    balance: 0,
+  },
+  {
+    id: "acc_c6_conta",
+    name: "C6 Conta",
+    bank: "C6",
+    kind: "checking",
+    color: "chart-4",
+    balance: 0,
+  },
 ];
 
 function accountIdForFile(filename, content) {
@@ -253,7 +337,9 @@ function accountIdForFile(filename, content) {
 // === MAIN ===
 
 function main() {
-  const files = readdirSync(EXTRATOS).filter((f) => /\.(ofx|csv)$/i.test(f)).sort();
+  const files = readdirSync(EXTRATOS)
+    .filter((f) => /\.(ofx|csv)$/i.test(f))
+    .sort();
   console.log(`Found ${files.length} files in extratos/`);
 
   const seenFitIds = new Set();
@@ -279,10 +365,7 @@ function main() {
     }
     const account = ACCOUNTS.find((a) => a.id === accountId);
 
-    const rawTxs =
-      fmt === "btg_card_csv"
-        ? parseBtgCsv(content)
-        : parseOfx(content);
+    const rawTxs = fmt === "btg_card_csv" ? parseBtgCsv(content) : parseOfx(content);
 
     // Capture LEDGERBAL from OFX
     if (fmt !== "btg_card_csv") {
@@ -355,7 +438,9 @@ function main() {
   }
   console.log("\n=== Account balances (computed from tx sum) ===");
   for (const acc of ACCOUNTS) {
-    console.log(`  ${acc.name.padEnd(28)} ${acc.balance.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`);
+    console.log(
+      `  ${acc.name.padEnd(28)} ${acc.balance.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`,
+    );
   }
 
   // === Write TS file ===

@@ -17,6 +17,10 @@ const schema = z.object({
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   NEXT_PUBLIC_STRIPE_PRICE_PLUS: z.string().optional(),
   NEXT_PUBLIC_STRIPE_PRICE_PRO: z.string().optional(),
+
+  // Anthropic — para insights AI agent (M3.5 Phase 4). Opcional: se ausente,
+  // /app/insights mostra tela de configuração. Quando preenchido, agente roda.
+  ANTHROPIC_API_KEY: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
