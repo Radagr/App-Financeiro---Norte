@@ -110,8 +110,9 @@
   --color-muted-foreground: hsl(var(--muted-foreground));
 
   /* Norte typography */
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-sans: var(--font-sans-stack), system-ui, sans-serif;
+  --font-serif: var(--font-serif-stack), Georgia, serif;
+  --font-mono: var(--font-mono-stack), ui-monospace, monospace;
 
   /* Norte radius scale */
   --radius-lg: 16px;
@@ -163,6 +164,17 @@
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @layer base {

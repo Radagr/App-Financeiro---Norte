@@ -1,19 +1,28 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+
 import { ThemeProvider } from "@/components/theme-provider";
 import { TRPCProvider } from "@/trpc/provider";
-import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({
+import "./globals.css";
+
+const sans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans-stack",
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
+const serif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-jetbrains",
+  weight: ["400"],
+  variable: "--font-serif-stack",
+  display: "swap",
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono-stack",
   display: "swap",
 });
 
@@ -28,7 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={cn("h-full", "antialiased", inter.variable, jetbrains.variable, "font-sans")}
+      className={cn("h-full antialiased", sans.variable, serif.variable, mono.variable)}
     >
       <body className="flex min-h-full flex-col">
         <ThemeProvider
