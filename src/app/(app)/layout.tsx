@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { AppNav } from "@/components/dashboard/app-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -44,7 +45,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
         <ThemeToggle />
       </header>
-
+      <AppNav />
       <main className="px-6 py-8">{children}</main>
     </div>
   );
